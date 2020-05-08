@@ -7,8 +7,10 @@ import com.buzhiming.DTO.RegisterDTO;
 import com.buzhiming.VO.ResultVO;
 import com.buzhiming.VO.UserVO;
 import com.buzhiming.enums.CodeEnum;
+import com.buzhiming.mapper.UserMapper;
 import com.buzhiming.model.User;
 import com.buzhiming.provider.GithubProvider;
+import com.buzhiming.service.UserService;
 import com.buzhiming.service.impl.MaileService;
 import com.buzhiming.service.impl.UserServiceImpl;
 import com.buzhiming.utils.RedisUtil;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import javax.mail.MessagingException;
+import java.io.IOException;
 import java.util.UUID;
 
 @Controller
@@ -48,6 +51,7 @@ public class AuthorizeController {
     @ResponseBody
     @PostMapping("/login")
     public ResultVO<UserVO> login(@RequestBody LoginDTO loginDTO){
+        System.out.println(loginDTO);
         User user = userService.getUser(loginDTO);
         if(user == null){
             return new ResultVO<UserVO>(CodeEnum.LOGIN_FAILURE.id,CodeEnum.LOGIN_FAILURE.message,null);
@@ -76,9 +80,11 @@ public class AuthorizeController {
     @ResponseBody
     @PostMapping("/register")
     public ResultVO<Object> register(@RequestBody RegisterDTO registerDTO){
-        String code = (String) redisUtil.get(registerDTO.getEmail());
-        if(code == null || !registerDTO.getEmailCode().equals(code)){
-            return new ResultVO<Object>(CodeEnum.REGISTER_ERROR.id,CodeEnum.REGISTER_ERROR.message,null);
+        if(registerDTO.getId() == null){
+            String code = (String) redisUtil.get(registerDTO.getEmail());
+            if(code == null || !registerDTO.getEmailCode().equals(code)){
+                return new ResultVO<Object>(CodeEnum.REGISTER_ERROR.id,CodeEnum.REGISTER_ERROR.message,null);
+            }
         }
         userService.saveUser(registerDTO);
         return new ResultVO<Object>(CodeEnum.REGISTER_SUCCESS.id,CodeEnum.REGISTER_SUCCESS.message,null);
@@ -96,7 +102,7 @@ public class AuthorizeController {
     @GetMapping("/callback")
     public String callback(@RequestParam(name="code") String code,
                            @RequestParam(name="state") String state,
-                           Model model){
+                           Model model) throws IOException {
         AccessTokenDTO accessTokenDTO = new AccessTokenDTO();
         accessTokenDTO.setClient_id(clientId);
         accessTokenDTO.setClient_secret(clientSecret);
@@ -110,7 +116,7 @@ public class AuthorizeController {
             User user1 = new User();
             user1.setAccountId(githubUser.getId());
             User user2 = userService.getUser(user1);
-            String token = UUID.randomUUID().toString();
+            String token = UUID.randomUUID().toString();System.out.println(token);
             if(user2 == null){
                 User user = userService.saveUser(githubUser);
                 redisUtil.set(token,user.getId(),3600*24*7);
@@ -121,6 +127,7 @@ public class AuthorizeController {
         }else {
             model.addAttribute("token","");
         }
+
         System.out.println("转到授权页面");
         return "auth";
     }

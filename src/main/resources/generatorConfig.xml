@@ -30,6 +30,13 @@
         </javaClientGenerator>
 
         <table tableName="h_user" domainObjectName="User"/>
+        <table tableName="h_article" domainObjectName="Article"/>
+        <table tableName="h_question" domainObjectName="Question"/>
+        <table tableName="h_label" domainObjectName="Label"/>
+        <table tableName="h_label_related" domainObjectName="LabelRelated"/>
+        <table tableName="h_comment" domainObjectName="Comment"/>
+        <table tableName="h_askquestion" domainObjectName="Askquestion"/>
+        <table tableName="h_answer" domainObjectName="Answer"/>
 
     </context>
 </generatorConfiguration>

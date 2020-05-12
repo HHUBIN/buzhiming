@@ -1,12 +1,11 @@
 package com.buzhiming.service.impl;
 
-import com.buzhiming.DTO.ArticleDTO;
-import com.buzhiming.DTO.ArticlesDTO;
-import com.buzhiming.DTO.CommentDTO;
-import com.buzhiming.DTO.SubmitDTO;
+import com.buzhiming.DTO.*;
 import com.buzhiming.mapper.*;
 import com.buzhiming.model.*;
 import com.buzhiming.service.ArticleService;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,7 +37,9 @@ public class ArticleServiceImpl implements ArticleService {
         article.setViewCount(0);
         article.setTitle(submitDTO.getTitle());
         article.setContent(submitDTO.getContent());
-        article.setUserId(user.getId());
+        if(user != null){
+            article.setUserId(user.getId());
+        }
         article.setCreateTime(new Date());
         article.setUpdateTime(new Date());
         articleMapper.insert(article);
@@ -51,7 +52,9 @@ public class ArticleServiceImpl implements ArticleService {
             labelRelated.setType(0);
             labelRelateds.add(labelRelated);
         }
-        labelRelatedPlusMapper.insertLabelRelated(labelRelateds);
+        if(labelRelateds != null && labelRelateds.size() != 0){
+            labelRelatedPlusMapper.insertLabelRelated(labelRelateds);
+        }
         return article.getId();
     }
 
@@ -89,8 +92,39 @@ public class ArticleServiceImpl implements ArticleService {
 
 
     @Override
-    public List<ArticlesDTO> getArticleDTOs() {
-        return articlePlusMapper.getArticles();
+    public PageInfo<ArticlesDTO> getArticleDTOs(PageRequest pageRequest) {
+        int pageNum = pageRequest.getPageNum();
+        int pageSize = pageRequest.getPageSize();
+        PageHelper.startPage(pageNum, pageSize);
+        List<ArticlesDTO> sysMenus = articlePlusMapper.getArticles();
+        List<ArticlesDTO> articlesByUserId = articlePlusMapper.getArticlesByUserId("158830164573617a3e9c6-fa16-4361-8433-3f5bdb48bbeb");
+        if(articlesByUserId.size() > 0){
+            sysMenus.add(0,articlesByUserId.get(articlesByUserId.size()-1));
+        }
+        for (ArticlesDTO aritclesDTO : sysMenus) {
+            for(int i = 0; i < aritclesDTO.getContent().length(); i++) {
+                if(aritclesDTO.getContent().charAt(i) == '['){
+                    for(int j = i+1; j < aritclesDTO.getContent().length(); j++) {
+                        if(aritclesDTO.getContent().charAt(j) == ']' && aritclesDTO.getContent().charAt(j+1) == '('){
+                            for(int k = j+1; k < aritclesDTO.getContent().length(); k++) {
+                                if(aritclesDTO.getContent().charAt(k) == ')') {
+                                    aritclesDTO.setFirstImg(aritclesDTO.getContent().substring(j + 2, k));
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if(aritclesDTO.getContent().length() > 120){
+                aritclesDTO.setContent(aritclesDTO.getContent().substring(0,120));
+            }
+            if(aritclesDTO.getTitle().length()>55){
+                aritclesDTO.setTitle(aritclesDTO.getTitle().substring(0,55)+"...");
+            }
+        }
+
+        return new PageInfo<ArticlesDTO>(sysMenus);
     }
 
     @Override
@@ -125,6 +159,7 @@ public class ArticleServiceImpl implements ArticleService {
         LabelRelatedExample labelRelatedExample = new LabelRelatedExample();
         labelRelatedExample.createCriteria().andTargetIdEqualTo(article.getId());
         labelRelatedMapper.deleteByExample(labelRelatedExample);
+        if(labelRelateds != null && labelRelateds.size() > 0)
         labelRelatedPlusMapper.insertLabelRelated(labelRelateds);
         return article.getId();
     }

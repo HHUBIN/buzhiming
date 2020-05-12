@@ -19,4 +19,5 @@ public class ArticlesDTO {
     private Date updateTime;
     private String content;
     private List<Label> labels;
+    private String firstImg;
 }

@@ -24,7 +24,7 @@
                 select="com.buzhiming.mapper.LabelRelatedPlusMapper.selectLabelById" column="{id=id}"></collection>
   </resultMap>
   <select id="getArticles" resultMap="ArticlesDTO">
-     select a.*,left(a.content,200) c,name user_name,b.img_url user_img_url from h_article a left join h_user b on a.user_id = b.id order by create_time desc;
+     select a.*,a.content c,name user_name,b.img_url user_img_url from h_article a left join h_user b on a.user_id = b.id order by create_time desc
 
   </select>
   <select id="getArticlesByUserId" resultMap="ArticlesDTO">

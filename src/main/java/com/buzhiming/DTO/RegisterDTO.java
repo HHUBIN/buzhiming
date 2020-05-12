@@ -9,6 +9,7 @@ public class RegisterDTO {
     private String gender;
     private String imgUrl;
     private String bgUrl;
+    private Long accountId;
     private String password;
     private String email;
     private String emailCode;

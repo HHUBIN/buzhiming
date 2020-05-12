@@ -2,6 +2,7 @@ package com.buzhiming.controller;
 
 import com.buzhiming.DTO.ArticleDTO;
 import com.buzhiming.DTO.ArticlesDTO;
+import com.buzhiming.DTO.PageRequest;
 import com.buzhiming.DTO.SubmitDTO;
 import com.buzhiming.VO.ResultVO;
 import com.buzhiming.enums.CodeEnum;
@@ -10,6 +11,7 @@ import com.buzhiming.service.ArticleService;
 import com.buzhiming.service.QusetionService;
 import com.buzhiming.service.UserService;
 import com.buzhiming.utils.RedisUtil;
+import com.github.pagehelper.PageInfo;
 import com.sun.org.apache.bcel.internal.classfile.Code;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -34,7 +36,6 @@ public class ArticleQusetionController {
      */
     @PostMapping("/submit")
     public ResultVO<String> submit(@RequestBody SubmitDTO submitDTO){
-        System.out.println(submitDTO);
         String resultId = null;
         if(submitDTO.getToken() == null){
             if(submitDTO.getType().equals("article")){
@@ -45,10 +46,6 @@ public class ArticleQusetionController {
             return new ResultVO<>(CodeEnum.SUCCESS.id,CodeEnum.SUCCESS.message,resultId);
         }
         String id = (String)redisUtil.get(submitDTO.getToken());
-        System.out.println(id);
-        if(id == null || id == ""){
-            return new ResultVO<>(CodeEnum.FAILURE.id,CodeEnum.FAILURE.message,null);
-        }
         User user = userService.getUserById(id);
         System.out.println();
         if(submitDTO.getType().equals("article")){
@@ -81,10 +78,10 @@ public class ArticleQusetionController {
         }
         return new ResultVO<ArticleDTO>(CodeEnum.SUCCESS.id,CodeEnum.SUCCESS.message,articleDTO);
     }
-    @GetMapping("/articles")
-    public ResultVO<List<ArticlesDTO>> articles(){
-        List<ArticlesDTO> articleDTOs = articleService.getArticleDTOs();
-        return new ResultVO<List<ArticlesDTO>>(CodeEnum.SUCCESS.id,CodeEnum.SUCCESS.message,articleDTOs);
+    @PostMapping("/articles")
+    public ResultVO<PageInfo<ArticlesDTO>> articles(@RequestBody PageRequest request){
+        PageInfo<ArticlesDTO> articleDTOs = articleService.getArticleDTOs(request);
+        return new ResultVO<PageInfo<ArticlesDTO>>(CodeEnum.SUCCESS.id,CodeEnum.SUCCESS.message,articleDTOs);
 
     }
 

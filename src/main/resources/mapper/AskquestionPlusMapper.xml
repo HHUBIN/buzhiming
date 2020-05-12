@@ -17,7 +17,7 @@
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     </resultMap>
     <select id="getAsks" resultMap="BaseResultMap">
-        select a.*,b.* from h_askquestion a left join h_user b on a.user_id = b.id
+        select a.*,b.* from h_askquestion a left join h_user b on a.user_id = b.id order by a.create_time desc
     </select>
     <select id="getAsk" resultMap="BaseResultMap">
         select a.*,b.* from h_askquestion a left join h_user b on a.user_id = b.id where a.id = #{id}

@@ -18,6 +18,6 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <select id="getAnswers" resultMap="BaseResultMap">
-    select * from h_answer a left join h_user b on a.user_id = b.id where a.ask_id=#{id} order by a.create_time asc;
+    select * from h_answer a left join h_user b on a.user_id = b.id where a.ask_id=#{id} order by a.create_time desc;
   </select>
 </mapper>

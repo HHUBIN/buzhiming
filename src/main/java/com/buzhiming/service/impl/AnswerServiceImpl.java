@@ -6,7 +6,6 @@ import com.buzhiming.mapper.AskquestionMapper;
 import com.buzhiming.model.Answer;
 import com.buzhiming.model.Askquestion;
 import com.buzhiming.service.AnswerService;
-import com.buzhiming.service.AskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

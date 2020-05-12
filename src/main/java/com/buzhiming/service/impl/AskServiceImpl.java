@@ -1,12 +1,11 @@
 package com.buzhiming.service.impl;
 
-import com.buzhiming.DTO.AnswerDTO;
-import com.buzhiming.DTO.AnswersDTO;
-import com.buzhiming.DTO.AskquestionDTO;
-import com.buzhiming.DTO.AskquestionsDTO;
+import com.buzhiming.DTO.*;
 import com.buzhiming.mapper.*;
 import com.buzhiming.model.*;
 import com.buzhiming.service.AskService;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,18 +39,19 @@ public class AskServiceImpl implements AskService {
     }
 
     @Override
-    public List<AskquestionsDTO> getAsks() {
-        List<AskquestionsDTO> askquestions = askquestionPlusMapper.getAsks();
-        Collections.reverse(askquestions);
-        return askquestions;
-    }
+    public PageInfo<AskquestionsDTO> getAsks(PageRequest pageRequest) {
+        int pageNum = pageRequest.getPageNum();
+        int pageSize = pageRequest.getPageSize();
+        PageHelper.startPage(pageNum, pageSize);
+        List<AskquestionsDTO> sysMenus = askquestionPlusMapper.getAsks();
+        return new PageInfo<AskquestionsDTO>(sysMenus);
+}
 
     @Override
     public AnswersDTO getAskById(String id) {
         AskquestionsDTO ask = askquestionPlusMapper.getAsk(id);
 
         List<AnswerDTO> answerDTOS = answerPlusMapper.getAnswers(id);
-        Collections.reverse(answerDTOS);
         AnswersDTO answersDTO = new AnswersDTO();
         answersDTO.setAskquestionsDTO(ask);
         answersDTO.setAnswerDTOS(answerDTOS);

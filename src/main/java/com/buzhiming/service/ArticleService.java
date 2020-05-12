@@ -1,9 +1,8 @@
 package com.buzhiming.service;
 
-import com.buzhiming.DTO.ArticleDTO;
-import com.buzhiming.DTO.ArticlesDTO;
-import com.buzhiming.DTO.SubmitDTO;
+import com.buzhiming.DTO.*;
 import com.buzhiming.model.User;
+import com.github.pagehelper.PageInfo;
 
 import java.util.List;
 
@@ -12,7 +11,7 @@ public interface ArticleService {
 
     ArticleDTO getArticleDTOById(String id);
 
-    List<ArticlesDTO> getArticleDTOs();
+    PageInfo<ArticlesDTO> getArticleDTOs(PageRequest pageRequest);
 
     List<ArticlesDTO> getArticleDTOsByUserId(String userId);
 

@@ -43,14 +43,18 @@ public class CommentServiceImpl implements CommentService {
             articleMapper.updateByPrimaryKey(article);
             User user = userMapper.selectByPrimaryKey(article.getUserId());
             if(commentDTO.getTargetName() == null){
-                comment.setTargetId(user.getName());
+                if(user != null){
+                    comment.setTargetId(user.getName());
+                }
             }
         }else if(answer != null){
             answer.setCommentCount(answer.getCommentCount()+1);
             answerMapper.updateByPrimaryKey(answer);
             User user = userMapper.selectByPrimaryKey(answer.getUserId());
             if(commentDTO.getTargetName() == null){
-                comment.setTargetId(user.getName());
+                if(user != null){
+                    comment.setTargetId(user.getName());
+                }
             }
         }else {
             Comment comment1 = commentMapper.selectByPrimaryKey(commentDTO.getId());
@@ -58,7 +62,9 @@ public class CommentServiceImpl implements CommentService {
             commentMapper.updateByPrimaryKey(comment1);
             User user = userMapper.selectByPrimaryKey(comment1.getUserId());
             if(commentDTO.getTargetName() == null){
-                comment.setTargetId(user.getName());
+                if(user != null){
+                    comment.setTargetId(user.getName());
+                }
             }
         }
         commentMapper.insert(comment);

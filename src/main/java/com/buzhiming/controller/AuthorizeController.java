@@ -92,7 +92,8 @@ public class AuthorizeController {
     @ResponseBody
     @GetMapping("/user/{token}")
     public ResultVO<UserVO> user(@PathVariable("token") String token){
-        User user = userService.getUserById(String.valueOf(redisUtil.get(token)));
+        String  id = (String)redisUtil.get(token);
+        User user = userService.getUserById(String.valueOf(id));
         if(user == null){
             return new ResultVO<UserVO>(CodeEnum.LOGIN_FAILURE.id,CodeEnum.LOGIN_FAILURE.message,null);
         }
@@ -110,6 +111,7 @@ public class AuthorizeController {
         accessTokenDTO.setRedirect_uri(redirectUri);
         accessTokenDTO.setState(state);
         String accessToken = githubProvider.getAccessToken(accessTokenDTO);
+        System.out.println("================token:"+accessToken);
         GithubUser githubUser = githubProvider.getUser(accessToken);
         System.out.println(githubUser);
         if(githubUser != null && githubUser.getId() != null) {

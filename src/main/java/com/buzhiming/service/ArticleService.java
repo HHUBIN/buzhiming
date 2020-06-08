@@ -18,4 +18,6 @@ public interface ArticleService {
     void deleteById(String id);
 
     String updateArticle(User user, SubmitDTO submitDTO);
+
+    int updateArticleLike(String id);
 }

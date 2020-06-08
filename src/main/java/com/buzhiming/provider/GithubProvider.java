@@ -28,6 +28,7 @@ public class GithubProvider {
                     .build();
             try (Response response = client.newCall(request).execute()) {
                  String string = response.body().string();
+                System.out.println("==========token对象"+string);
                  String token = string.split("&")[0].split("=")[1];
                 return token;
             } catch(IOException e) {
@@ -37,12 +38,6 @@ public class GithubProvider {
     }
 
     public GithubUser getUser(String accessToken){
-/*        System.out.println(accessToken);
-        RestTemplate restTemplate = new RestTemplate();
-        Notice notice = restTemplate.getForObject("http://api.github.com/user?access_token="+accessToken,Notice.class);
-        System.out.println(notice);
-        return null;*/
-
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url("https://api.github.com/user")
@@ -51,6 +46,7 @@ public class GithubProvider {
         try{
             Response response = client.newCall(request).execute();
             String string  = response.body().string();
+            System.out.println(string);
             GithubUser githubUser = JSON.parseObject(string,GithubUser.class);
             return githubUser;
         } catch(IOException e) {

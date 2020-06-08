@@ -92,4 +92,16 @@ public class CommentServiceImpl implements CommentService {
         System.out.println(count);
         return count;
     }
+
+    @Override
+    public int updateCommentLike(String id) {
+        Comment comment = commentMapper.selectByPrimaryKey(id);
+        if(comment != null){
+            comment.setLikeCount(comment.getLikeCount()+1);
+            commentMapper.updateByPrimaryKey(comment);
+            return comment.getLikeCount();
+        }else {
+            return -1;
+        }
+    }
 }

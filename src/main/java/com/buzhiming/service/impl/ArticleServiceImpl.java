@@ -97,9 +97,9 @@ public class ArticleServiceImpl implements ArticleService {
         int pageSize = pageRequest.getPageSize();
         PageHelper.startPage(pageNum, pageSize);
         List<ArticlesDTO> sysMenus = articlePlusMapper.getArticles();
-        List<ArticlesDTO> articlesByUserId = articlePlusMapper.getArticlesByUserId("158830164573617a3e9c6-fa16-4361-8433-3f5bdb48bbeb");
-        if(articlesByUserId.size() > 0){
-            sysMenus.add(0,articlesByUserId.get(articlesByUserId.size()-1));
+        if(pageRequest.getPageNum() == 1){
+            List<ArticlesDTO> articlesByUserId = articlePlusMapper.getArticlesByUserId("1589204507878f3d1273c-3bd3-4250-a922-263e781076d4");
+                sysMenus.add(0,articlesByUserId.get(articlesByUserId.size()-1));
         }
         for (ArticlesDTO aritclesDTO : sysMenus) {
             for(int i = 0; i < aritclesDTO.getContent().length(); i++) {
@@ -119,11 +119,7 @@ public class ArticleServiceImpl implements ArticleService {
             if(aritclesDTO.getContent().length() > 120){
                 aritclesDTO.setContent(aritclesDTO.getContent().substring(0,120));
             }
-            if(aritclesDTO.getTitle().length()>55){
-                aritclesDTO.setTitle(aritclesDTO.getTitle().substring(0,55)+"...");
-            }
         }
-
         return new PageInfo<ArticlesDTO>(sysMenus);
     }
 
@@ -162,5 +158,17 @@ public class ArticleServiceImpl implements ArticleService {
         if(labelRelateds != null && labelRelateds.size() > 0)
         labelRelatedPlusMapper.insertLabelRelated(labelRelateds);
         return article.getId();
+    }
+
+    @Override
+    public int updateArticleLike(String id) {
+        Article article = articleMapper.selectByPrimaryKey(id);
+        if(article != null){
+            article.setLikeCount(article.getLikeCount()+1);
+            articleMapper.updateByPrimaryKey(article);
+            return article.getLikeCount();
+        }else {
+            return -1;
+        }
     }
 }

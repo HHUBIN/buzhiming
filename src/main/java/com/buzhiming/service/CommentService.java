@@ -11,4 +11,6 @@ public interface CommentService {
     List<CommentDTO> getCommentsByUserName(String userid);
 
     Integer getCountByUserId(String userid);
+
+    int updateCommentLike(String id);
 }

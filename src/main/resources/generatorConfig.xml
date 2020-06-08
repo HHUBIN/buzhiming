@@ -7,7 +7,7 @@
     <context id="Tables" targetRuntime="MyBatis3">
         <plugin type="org.mybatis.generator.plugins.RowBoundsPlugin"></plugin>
         <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
-                        connectionURL="jdbc:mysql://localhost/buzhiming?serverTimezone=UTC"
+                        connectionURL="jdbc:mysql://117.50.10.161:3306/buzhiming?serverTimezone=UTC"
                         userId="root"
                         password="123456">
         </jdbcConnection>
@@ -37,6 +37,7 @@
         <table tableName="h_comment" domainObjectName="Comment"/>
         <table tableName="h_askquestion" domainObjectName="Askquestion"/>
         <table tableName="h_answer" domainObjectName="Answer"/>
+        <table tableName="h_like" domainObjectName="Like"/>
 
     </context>
 </generatorConfiguration>
